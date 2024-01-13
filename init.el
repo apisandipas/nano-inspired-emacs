@@ -171,6 +171,9 @@
  
 
 	(bp/leader-keys
+	  "p" '(projectile-command-map :wk "Projectile"))
+	
+	(bp/leader-keys
 	  "b" '(:ignore t :wk "Buffers")
 	  "b w" '(consult-buffer :wk "Switch to buffer")
 	  "b k" '(kill-current-buffer :wk "Kill current buffer")
@@ -600,6 +603,32 @@
   (set-face-foreground 'git-gutter:deleted nano-color-popout)
   )
 
+(use-package magit
+  :straight t)
+
+(bp/leader-keys
+    "g" '(:ignore t :wk "Git")    
+    "g /" '(magit-dispatch :wk "Magit dispatch")
+    "g ." '(magit-file-displatch :wk "Magit file dispatch")
+    "g b" '(magit-branch-checkout :wk "Switch branch")
+    "g c" '(:ignore t :wk "Create") 
+    "g c b" '(magit-branch-and-checkout :wk "Create branch and checkout")
+    "g c c" '(magit-commit-create :wk "Create commit")
+    "g c f" '(magit-commit-fixup :wk "Create fixup commit")
+    "g C" '(magit-clone :wk "Clone repo")
+    "g f" '(:ignore t :wk "Find") 
+    "g f c" '(magit-show-commit :wk "Show commit")
+    "g f f" '(magit-find-file :wk "Magit find file")
+    "g f g" '(magit-find-git-config-file :wk "Find gitconfig file")
+    "g F" '(magit-fetch :wk "Git fetch")
+    "g g" '(magit-status :wk "Magit status")
+    "g i" '(magit-init :wk "Initialize git repo")
+    "g l" '(magit-log-buffer-file :wk "Magit buffer log")
+    "g r" '(vc-revert :wk "Git revert file")
+    "g s" '(magit-stage-file :wk "Git stage file")
+    "g t" '(git-timemachine :wk "Git time machine")
+    "g u" '(magit-stage-file :wk "Git unstage file"))
+
 (use-package markdown-mode
   :straight t)
 
@@ -607,7 +636,6 @@
   :straight t
   :config
   (projectile-mode +1)
-  ;; Recommended keymap prefix on macOS
-  (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
-  ;; Recommended keymap prefix on Windows/Linux
-  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map))
+  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+  (setq projectile-project-search-path '("~/src/" "~/.config/"))
+  (setq projectile-globally-ignored-directories '("straight" "eln-cache")))
