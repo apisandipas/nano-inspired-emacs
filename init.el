@@ -48,8 +48,8 @@
       (convert-standard-filename
 	(expand-file-name  "eln-cache/" no-littering-var-directory)))))
 
-(use-package modus-themes
-  :straight t)
+;; (use-package modus-themes
+;;   :straight t)
 
 (setq inhibit-startup-message t)
 
@@ -64,8 +64,8 @@
 (setq visible-bell t)
 
 (column-number-mode)
-(global-display-line-numbers-mode t)
 (setq display-line-numbers 'relative)
+(global-display-line-numbers-mode)
 
 (defvar bp/default-font-size 150)
 (defvar bp/default-variable-font-size 150)
@@ -103,9 +103,9 @@
   (setq nano-color-subtle     "#434C5E") ;; Polar Night 2 / nord  2
   (setq nano-color-faded      "#677691") ;;
   ;; to allow for toggling of the themes.
-  (setq nano-theme-var "dark")) 
+  (setq nano-theme-var "dark"))
 
-(nano-theme-set-dark) 
+(nano-theme-set-dark)
 
 (require 'nano-faces)
 (nano-faces)
@@ -173,6 +173,7 @@
 	(bp/leader-keys
 	  "p" '(projectile-command-map :wk "Projectile"))
 	
+	
 	(bp/leader-keys
 	  "b" '(:ignore t :wk "Buffers")
 	  "b w" '(consult-buffer :wk "Switch to buffer")
@@ -187,15 +188,15 @@
 	(bp/leader-keys
 	  "f" '(:ignore t :wk "Files")    
 	  "f c" '((lambda () (interactive)
-		  (find-file "~/.config/emacs-vanilla/config.org")) 
+		  (find-file "~/src/emacs-vanilla/config.org")) 
 		:wk "Open emacs config.org")
 	  "f e" '((lambda () (interactive)
-		  (dired "~/.config/emacs-vanilla/")) 
+		  (dired "~/src/emacs-vanilla/")) 
 		:wk "Open user-emacs-directory in dired")
 	  "f d" '(find-grep-dired :wk "Search for string in files in DIR")
 	  ;;" fg" '(counsel-grep-or-swiper :wk "Search for string current file")
 	  "f i" '((lambda () (interactive)
-		  (find-file "~/.config/emacs-vanilla/init.el")) 
+		  (find-file "~/src/emacs-vanilla/init.el")) 
 		:wk "Open emacs init.el")
 	  "f j" '(consult-find :wk "Jump to a file below current directory")
 	  "f l" '(consult-locate :wk "Locate a file")
@@ -230,7 +231,7 @@
 	  "h m" '(describe-mode :wk "Describe mode")
 	  "h r" '(:ignore t :wk "Reload")
 	  "h r r" '((lambda () (interactive)
-		    (load-file "~/.config/emacs-vanilla/init.el"))
+		    (load-file "~/src/emacs-vanilla/init.el"))
 		  :wk "Reload emacs config")
 	  "h t" '(load-theme :wk "Load theme")
 	  "h v" '(helpful-variable :wk "Describe variable")
@@ -454,7 +455,8 @@
   :config
   (setq olivetti-body-width 120))
 
-(use-package treemacs-nerd-icons)
+(use-package treemacs-nerd-icons
+  :straight t)
 (use-package treemacs
   :defer t
   :init
@@ -504,7 +506,7 @@
     (window-width . fit-window-to-buffer))
    ))
 
- (use-package tree-sitter
+(use-package tree-sitter
   :straight t
   :config
   ;; activate tree-sitter on any buffer containing code for which it has a parser available
@@ -517,13 +519,56 @@
   :straight t
   :after tree-sitter)
 
-(add-hook 'typescript-mode-hook 'eglot-ensure)
+;; (add-hook 'typescript-mode-hook 'eglot-ensure)
 
-(use-package eldoc-box
-   :straight t
-   :hook (eglot-managed-mode . eldoc-box-hover-mode)
-   :config
-   (set-face-attribute 'eldoc-box-border nil :background nano-color-highlight))
+;; (use-package eldoc-box
+;;    :straight t
+;;    :hook (eglot-managed-mode . eldoc-box-hover-mode)
+;;    :config
+;;    (set-face-attribute 'eldoc-box-border nil :background nano-color-highlight))
+
+(use-package lsp-mode
+  :straight t
+  :init
+  ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
+  (setq lsp-keymap-prefix "C-c l")
+  :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
+         (typescript-mode . lsp-deferred)
+         ;; if you want which-key integration
+         (lsp-mode . lsp-enable-which-key-integration))
+  :commands lsp lsp-deferred
+  :config
+    (setq lsp-headerline-breadcrumb-enable nil)) 
+
+(use-package lsp-ui
+  :straight t
+  :commands lsp-ui-mode
+  :config
+  (setq lsp-ui-sideline-show-diagnostics t)
+  (setq lsp-ui-doc-enable t))
+
+(with-eval-after-load 'lsp-ui
+  (setq lsp-ui-peek-fontify 'always)
+  (set-face-attribute 'lsp-ui-peek-header nil
+		      :background nano-color-subtle
+		      :foreground nano-color-foreground
+		      :weight 'bold)
+  (set-face-attribute 'lsp-ui-peek-footer nil :inherit 'lsp-ui-peek-header)
+  (set-face-attribute 'lsp-ui-peek-list   nil :background nano-color-background)
+  (set-face-attribute 'lsp-ui-peek-peek   nil :inherit 'lsp-ui-peek-list)
+  (set-face-attribute 'lsp-ui-peek-selection nil :background nano-color-background :foreground nano-color-salient)
+  (set-face-attribute 'lsp-ui-peek-filename nil :foreground nano-color-popout)
+  (set-face-attribute 'lsp-ui-peek-highlight nil :background nano-color-highlight)
+
+   ;; HIGHLY recommended: (setq lsp-ui-peek-fontify 'always)
+   ;; ~(lsp-ui-peek-header                          :foreground fg :background base5)
+   ;; (lsp-ui-peek-footer                          :inherit 'lsp-ui-peek-header)
+   ;; (lsp-ui-peek-selection                       :foreground bg :background yellow)
+   ;; (lsp-ui-peek-list                            :background base3)
+   ;; (lsp-ui-peek-peek                            :inherit 'lsp-ui-peek-list)
+   ;; (lsp-ui-peek-highlight                       :inherit 'isearch)
+   ;; (lsp-ui-peek-filename                        :foreground base8 :weight 'bold)
+  )
 
  (use-package typescript-mode
   :after tree-sitter
