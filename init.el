@@ -422,6 +422,10 @@
 
 (use-package corfu
   :straight t
+  :config
+  (set-face-attribute 'corfu-default nil :background nano-color-background)
+  (set-face-attribute 'corfu-current nil :background nano-color-highlight)
+  (set-face-attribute 'corfu-bar nil :background nano-color-faded)
   :init
   (global-corfu-mode))
 
