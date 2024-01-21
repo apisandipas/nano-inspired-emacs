@@ -60,6 +60,7 @@
 
 (column-number-mode)
 (setq display-line-numbers 'relative)
+(display-line-numbers-mode 0)
 
 (defvar bp/default-font-size 150)
 (defvar bp/default-variable-font-size 150)
@@ -148,123 +149,123 @@
  ;;   :config
  ;;   (setq doom-modeline-height 36))
 
-      (use-package general
-	:after evil
-	:config
-	(general-create-definer bp/leader-keys
-	  :keymaps '(normal insert visual emacs)
-	  :prefix "SPC"
-	  :global-prefix "C-SPC")
+  (use-package general
+    :after evil
+    :config
+    (general-create-definer bp/leader-keys
+        :keymaps '(normal insert visual emacs)
+        :prefix "SPC"
+        :global-prefix "C-SPC")
 
-       
-	(bp/leader-keys
-	  "SPC" '(execute-extended-command :wk "Execute Command")
-	  "." '(find-file :wk "Find file")
-	  ;; "=" '(perspective-map :wk "Perspective") ;; Lists all the perspective keybindings
-	  "TAB TAB" '(comment-line :wk "Comment lines")
-	  "u" '(universal-argument :wk "Universal argument"))
- 
 
-	(bp/leader-keys
-	  "p" '(projectile-command-map :wk "Projectile"))
-	
-	
-	(bp/leader-keys
-	  "b" '(:ignore t :wk "Buffers")
-	  "b w" '(consult-buffer :wk "Switch to buffer")
-	  "b k" '(kill-current-buffer :wk "Kill current buffer")
-	  "b K" '(kill-some-buffers :wk "Kill multiple buffers")
-	  "b n" '(next-buffer :wk "Next buffer")
-	  "b p" '(previous-buffer :wk "Previous buffer")
-	  "b r" '(revert-buffer :wk "Reload buffer")
-	  "b R" '(rename-buffer :wk "Rename buffer")
-	  "b s" '(save-buffer :wk "Save buffer"))
+    (bp/leader-keys
+        "SPC" '(execute-extended-command :wk "Execute Command")
+        "." '(find-file :wk "Find file")
+        ;; "=" '(perspective-map :wk "Perspective") ;; Lists all the perspective keybindings
+        "TAB TAB" '(comment-line :wk "Comment lines")
+        "u" '(universal-argument :wk "Universal argument"))
 
-	(bp/leader-keys
-	  "f" '(:ignore t :wk "Files")    
-	  "f c" '((lambda () (interactive)
-		  (find-file "~/src/emacs-vanilla/config.org")) 
-		:wk "Open emacs config.org")
-	  "f e" '((lambda () (interactive)
-		  (dired "~/src/emacs-vanilla/")) 
-		:wk "Open user-emacs-directory in dired")
-	  "f d" '(find-grep-dired :wk "Search for string in files in DIR")
-	  ;;" fg" '(counsel-grep-or-swiper :wk "Search for string current file")
-	  "f i" '((lambda () (interactive)
-		  (find-file "~/src/emacs-vanilla/init.el")) 
-		:wk "Open emacs init.el")
-	  "f j" '(consult-find :wk "Jump to a file below current directory")
-	  "f l" '(consult-locate :wk "Locate a file")
-	  "f r" '(consult-recent-file :wk "Find recent files")
-	  "f u" '(sudo-edit-find-file :wk "Sudo find file")
-	  "f U" '(sudo-edit :wk "Sudo edit file"))
 
-	(bp/leader-keys
-	  "h" '(:ignore t :wk "Help")
-	  "h a" '(apropos :wk "Apropos")
-	  "h b" '(describe-bindings :wk "Describe bindings")
-	  "h c" '(describe-char :wk "Describe character under cursor")
-	  "h d" '(:ignore t :wk "Emacs documentation")
-	  "h d a" '(about-emacs :wk "About Emacs")
-	  "h d d" '(view-emacs-debugging :wk "View Emacs debugging")
-	  "h d f" '(view-emacs-FAQ :wk "View Emacs FAQ")
-	  "h d m" '(info-emacs-manual :wk "The Emacs manual")
-	  "h d n" '(view-emacs-news :wk "View Emacs news")
-	  "h d o" '(describe-distribution :wk "How to obtain Emacs")
-	  "h d p" '(view-emacs-problems :wk "View Emacs problems")
-	  "h d t" '(view-emacs-todo :wk "View Emacs todo")
-	  "h d w" '(describe-no-warranty :wk "Describe no warranty")
-	  "h e" '(view-echo-area-messages :wk "View echo area messages")
-	  "h f" '(helpful-callable :wk "Describe function")
-	  "h F" '(describe-face :wk "Describe face")
-	  "h g" '(describe-gnu-project :wk "Describe GNU Project")
-	  "h i" '(info :wk "Info")
-	  "h I" '(describe-input-method :wk "Describe input method")
-	  "h k" '(helpful-key :wk "Describe key")
-	  "h l" '(view-lossage :wk "Display recent keystrokes and the commands run")
-	  "h L" '(describe-language-environment :wk "Describe language environment")
-	  "h m" '(describe-mode :wk "Describe mode")
-	  "h r" '(:ignore t :wk "Reload")
-	  "h r r" '((lambda () (interactive)
-		    (load-file "~/src/emacs-vanilla/init.el"))
-		  :wk "Reload emacs config")
-	  "h t" '(load-theme :wk "Load theme")
-	  "h v" '(helpful-variable :wk "Describe variable")
-	  "h w" '(where-is :wk "Prints keybinding for command if set")
-	  "h x" '(helpful-command :wk "Display full documentation for command"))
+    (bp/leader-keys
+        "p" '(projectile-command-map :wk "Projectile"))
 
-	(bp/leader-keys
-	  "w" '(:ignore t :wk "Windows/Words")
-	  ;; Window splits
-	  "w c" '(evil-window-delete :wk "Close window")
-	  "w n" '(evil-window-new :wk "New window")
-	  "w s" '(evil-window-split :wk "Horizontal split window")
-	  "w v" '(evil-window-vsplit :wk "Vertical split window")
-	  ;; Window motions
-	  "w h" '(evil-window-left :wk "Window left")
-	  "w j" '(evil-window-down :wk "Window down")
-	  "w k" '(evil-window-up :wk "Window up")
-	  "w l" '(evil-window-right :wk "Window right")
-	  "w w" '(evil-window-next :wk "Goto next window")
-	  ;; Move Windows
-	  "w H" '(buf-move-left :wk "Buffer move left")
-	  "w J" '(buf-move-down :wk "Buffer move down")
-	  "w K" '(buf-move-up :wk "Buffer move up")
-	  "w L" '(buf-move-right :wk "Buffer move right")
-	  ;; Words
-	  "w d" '(downcase-word :wk "Downcase word")
-	  "w u" '(upcase-word :wk "Upcase word")
-	  "w =" '(count-words :wk "Count words/lines for buffer"))
 
-	(bp/leader-keys
-	  "t" '(:ignore t :wl "Toggles")
-	  "t e" '(treemacs :wk "Toggle Explorer")))
+    (bp/leader-keys
+        "b" '(:ignore t :wk "Buffers")
+        "b w" '(consult-buffer :wk "Switch to buffer")
+        "b k" '(kill-current-buffer :wk "Kill current buffer")
+        "b K" '(kill-some-buffers :wk "Kill multiple buffers")
+        "b n" '(next-buffer :wk "Next buffer")
+        "b p" '(previous-buffer :wk "Previous buffer")
+        "b r" '(revert-buffer :wk "Reload buffer")
+        "b R" '(rename-buffer :wk "Rename buffer")
+        "b s" '(save-buffer :wk "Save buffer"))
 
-    (with-eval-after-load 'evil-maps
-      (define-key evil-normal-state-map (kbd "C-k") 'evil-window-up)
-      (define-key evil-normal-state-map (kbd "C-j") 'evil-window-down)
-      (define-key evil-normal-state-map (kbd "C-h") 'evil-window-left)
-      (define-key evil-normal-state-map (kbd "C-l") 'evil-window-right))
+    (bp/leader-keys
+        "f" '(:ignore t :wk "Files")    
+        "f c" '((lambda () (interactive)
+                (find-file "~/src/emacs-vanilla/config.org")) 
+            :wk "Open emacs config.org")
+        "f e" '((lambda () (interactive)
+                (dired "~/src/emacs-vanilla/")) 
+            :wk "Open user-emacs-directory in dired")
+        "f d" '(find-grep-dired :wk "Search for string in files in DIR")
+        ;;" fg" '(counsel-grep-or-swiper :wk "Search for string current file")
+        "f i" '((lambda () (interactive)
+                (find-file "~/src/emacs-vanilla/init.el")) 
+            :wk "Open emacs init.el")
+        "f j" '(consult-find :wk "Jump to a file below current directory")
+        "f l" '(consult-locate :wk "Locate a file")
+        "f r" '(consult-recent-file :wk "Find recent files")
+        "f u" '(sudo-edit-find-file :wk "Sudo find file")
+        "f U" '(sudo-edit :wk "Sudo edit file"))
+
+    (bp/leader-keys
+        "h" '(:ignore t :wk "Help")
+        "h a" '(apropos :wk "Apropos")
+        "h b" '(describe-bindings :wk "Describe bindings")
+        "h c" '(describe-char :wk "Describe character under cursor")
+        "h d" '(:ignore t :wk "Emacs documentation")
+        "h d a" '(about-emacs :wk "About Emacs")
+        "h d d" '(view-emacs-debugging :wk "View Emacs debugging")
+        "h d f" '(view-emacs-FAQ :wk "View Emacs FAQ")
+        "h d m" '(info-emacs-manual :wk "The Emacs manual")
+        "h d n" '(view-emacs-news :wk "View Emacs news")
+        "h d o" '(describe-distribution :wk "How to obtain Emacs")
+        "h d p" '(view-emacs-problems :wk "View Emacs problems")
+        "h d t" '(view-emacs-todo :wk "View Emacs todo")
+        "h d w" '(describe-no-warranty :wk "Describe no warranty")
+        "h e" '(view-echo-area-messages :wk "View echo area messages")
+        "h f" '(helpful-callable :wk "Describe function")
+        "h F" '(describe-face :wk "Describe face")
+        "h g" '(describe-gnu-project :wk "Describe GNU Project")
+        "h i" '(info :wk "Info")
+        "h I" '(describe-input-method :wk "Describe input method")
+        "h k" '(helpful-key :wk "Describe key")
+        "h l" '(view-lossage :wk "Display recent keystrokes and the commands run")
+        "h L" '(describe-language-environment :wk "Describe language environment")
+        "h m" '(describe-mode :wk "Describe mode")
+        "h r" '(:ignore t :wk "Reload")
+        "h r r" '((lambda () (interactive)
+                (load-file "~/src/emacs-vanilla/init.el"))
+                :wk "Reload emacs config")
+        "h t" '(load-theme :wk "Load theme")
+        "h v" '(helpful-variable :wk "Describe variable")
+        "h w" '(where-is :wk "Prints keybinding for command if set")
+        "h x" '(helpful-command :wk "Display full documentation for command"))
+
+    (bp/leader-keys
+        "w" '(:ignore t :wk "Windows/Words")
+        ;; Window splits
+        "w c" '(evil-window-delete :wk "Close window")
+        "w n" '(evil-window-new :wk "New window")
+        "w s" '(evil-window-split :wk "Horizontal split window")
+        "w v" '(evil-window-vsplit :wk "Vertical split window")
+        ;; Window motions
+        "w h" '(evil-window-left :wk "Window left")
+        "w j" '(evil-window-down :wk "Window down")
+        "w k" '(evil-window-up :wk "Window up")
+        "w l" '(evil-window-right :wk "Window right")
+        "w w" '(evil-window-next :wk "Goto next window")
+        ;; Move Windows
+        "w H" '(buf-move-left :wk "Buffer move left")
+        "w J" '(buf-move-down :wk "Buffer move down")
+        "w K" '(buf-move-up :wk "Buffer move up")
+        "w L" '(buf-move-right :wk "Buffer move right")
+        ;; Words
+        "w d" '(downcase-word :wk "Downcase word")
+        "w u" '(upcase-word :wk "Upcase word")
+        "w =" '(count-words :wk "Count words/lines for buffer"))
+
+    (bp/leader-keys
+        "t" '(:ignore t :wl "Toggles")
+        "t e" '(treemacs :wk "Toggle Explorer")))
+
+(with-eval-after-load 'evil-maps
+    (define-key evil-normal-state-map (kbd "C-k") 'evil-window-up)
+    (define-key evil-normal-state-map (kbd "C-j") 'evil-window-down)
+    (define-key evil-normal-state-map (kbd "C-h") 'evil-window-left)
+    (define-key evil-normal-state-map (kbd "C-l") 'evil-window-right))
 
   (use-package evil
       :init      ;; tweak evil's configuration before loading it
@@ -302,14 +303,14 @@
                                (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
 
     ;; Set faces for heading levels
-    (dolist (face '((org-level-1 . 1.2)
-                    (org-level-2 . 1.1)
-                    (org-level-3 . 1.05)
-                    (org-level-4 . 1.0)
+    (dolist (face '((org-level-1 . 1.5)
+                    (org-level-2 . 1.4)
+                    (org-level-3 . 1.3)
+                    (org-level-4 . 1.2)
                     (org-level-5 . 1.1)
-                    (org-level-6 . 1.1)
-                    (org-level-7 . 1.1)
-                    (org-level-8 . 1.1)))
+                    (org-level-6 . 1.0)
+                    (org-level-7 . 1.0)
+                    (org-level-8 . 1.0)))
       (set-face-attribute (car face) nil :font "Cantarell" :weight 'regular :height (cdr face)))
 
     ;; Ensure that anything that should be fixed-pitch in Org files appears that way
@@ -372,27 +373,16 @@
 ;; Optionally use the `orderless' completion style.
 (use-package orderless
   :init
-  ;; Configure a custom style dispatcher (see the Consult wiki)
-  ;; (setq orderless-style-dispatchers '(+orderless-consult-dispatch orderless-affix-dispatch)
-  ;;       orderless-component-separator #'orderless-escapable-split-on-space)
   (setq completion-styles '(orderless basic)
         completion-category-defaults nil
         completion-category-overrides '((file (styles partial-completion)))))
 
 ;; Enable rich annotations using the Marginalia package
 (use-package marginalia
-  ;; Bind `marginalia-cycle' locally in the minibuffer.  To make the binding
-  ;; available in the *Completions* buffer, add it to the
-  ;; `completion-list-mode-map'.
   :bind (:map minibuffer-local-map
          ("M-A" . marginalia-cycle))
 
-  ;; The :init section is always executed.
   :init
-
-  ;; Marginalia must be activated in the :init section of use-package such that
-  ;; the mode gets enabled right away. Note that this forces loading the
-  ;; package.
   (marginalia-mode))
 
 (use-package consult) 
@@ -503,32 +493,18 @@
 (use-package tree-sitter
   :straight t
   :config
-  ;; activate tree-sitter on any buffer containing code for which it has a parser available
   (global-tree-sitter-mode)
-  ;; you can easily see the difference tree-sitter-hl-mode makes for python, ts or tsx
-  ;; by switching on and off
   (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode))
 
 (use-package tree-sitter-langs
   :straight t
   :after tree-sitter)
 
-;; (add-hook 'typescript-mode-hook 'eglot-ensure)
-
-;; (use-package eldoc-box
-;;    :straight t
-;;    :hook (eglot-managed-mode . eldoc-box-hover-mode)
-;;    :config
-;;    (set-face-attribute 'eldoc-box-border nil :background nano-color-highlight))
-
 (use-package lsp-mode
   :straight t
   :init
-  ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
   (setq lsp-keymap-prefix "C-c l")
-  :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
-         (typescript-mode . lsp-deferred)
-         ;; if you want which-key integration
+  :hook ((typescript-mode . lsp-deferred)
          (lsp-mode . lsp-enable-which-key-integration))
   :commands lsp lsp-deferred
   :config
