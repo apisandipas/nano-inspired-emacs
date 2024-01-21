@@ -294,7 +294,8 @@
 
 (use-package evil-nerd-commenter
   :straight t
-  :bind ("M-/" . evilnc-comment-or-uncomment-lines))
+  :bind (("M-/" . evilnc-comment-or-uncomment-lines)
+	 ("C-M-/" . evilnc-comment-or-uncomment-html-tag)))
 
 (use-package org-auto-tangle
   :defer t
@@ -516,11 +517,49 @@
     (window-width . fit-window-to-buffer))
    ))
 
+;; (use-package tree-sitter
+;;   :straight t
+;;   :config
+;;   (global-tree-sitter-mode)
+;;   (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)
+;;   )
+
 (use-package tree-sitter
-  :straight t
+  :commands (treesit-install-language-grammar bp/treesit-install-all-languages)
+  :init
+  (setq treesit-language-source-alist
+   '((bash . ("https://github.com/tree-sitter/tree-sitter-bash"))
+     (c . ("https://github.com/tree-sitter/tree-sitter-c"))
+     (cpp . ("https://github.com/tree-sitter/tree-sitter-cpp"))
+     (css . ("https://github.com/tree-sitter/tree-sitter-css"))
+     (go . ("https://github.com/tree-sitter/tree-sitter-go"))
+     (html . ("https://github.com/tree-sitter/tree-sitter-html"))
+     (javascript . ("https://github.com/tree-sitter/tree-sitter-javascript"))
+     (json . ("https://github.com/tree-sitter/tree-sitter-json"))
+     (lua . ("https://github.com/Azganoth/tree-sitter-lua"))
+     (make . ("https://github.com/alemuller/tree-sitter-make"))
+     (ocaml . ("https://github.com/tree-sitter/tree-sitter-ocaml" "ocaml/src" "ocaml"))
+     (python . ("https://github.com/tree-sitter/tree-sitter-python"))
+     (php . ("https://github.com/tree-sitter/tree-sitter-php"))
+     (tsx "https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src")
+     (typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")
+     (ruby . ("https://github.com/tree-sitter/tree-sitter-ruby"))
+     (rust . ("https://github.com/tree-sitter/tree-sitter-rust"))
+     (sql . ("https://github.com/m-novikov/tree-sitter-sql"))
+     (toml . ("https://github.com/tree-sitter/tree-sitter-toml"))
+     (zig . ("https://github.com/GrayJack/tree-sitter-zig"))))
   :config
   (global-tree-sitter-mode)
-  (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode))
+  (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)
+  (defun bp/treesit-install-all-languages ()
+    "Install all languages specified by `treesit-language-source-alist'."
+    (interactive)
+    (let ((languages (mapcar 'car treesit-language-source-alist)))
+      (dolist (lang languages)
+	      (treesit-install-language-grammar lang)
+	      (message "`%s' parser was installed." lang)
+	      (sit-for 0.75)))))
+
 
 (use-package tree-sitter-langs
   :straight t
@@ -559,17 +598,25 @@
  (use-package typescript-mode
   :after tree-sitter
   :config
-  (define-derived-mode typescriptreact-mode typescript-mode
-    "TypeScript TSX")
+  ;; (define-derived-mode typescriptreact-mode typescript-mode
+  ;;   "TypeScript TSX")
 
   ;; use our derived mode for tsx files
-  (add-to-list 'auto-mode-alist '("\\.tsx?\\'" . typescriptreact-mode))
-  (add-to-list 'tree-sitter-major-mode-language-alist '(typescriptreact-mode . tsx)))
+  (add-to-list 'auto-mode-alist '("\\.tsx?\\'" . tsx-ts-mode))
+   ;; (add-to-list 'tree-sitter-major-mode-language-alist '(tsx-ts-mode . tsx))
+  )
+
+  ;; (add-to-list 'auto-mode-alist '("\\.tsx?\\'" . tsx-ts-mode))
+;; (use-package tsx-mode
+;;   :straight (tsx-mode :type git :host github :repo "orzechowskid/tsx-mode.el")
+;;   :config
+;;   (add-to-list 'auto-mode-alist '("\\.[jt]s[x]?\\'" . tsx-mode))
+;;   (tsx-mode t))
 
 
 (use-package prettier-js
   :straight t
-  :hook ((web-mode typescriptreact-mode) . prettier-js-mode))
+  :hook ((web-mode tsx-ts-mode) . prettier-js-mode))
 
 (use-package flycheck
   :straight t
