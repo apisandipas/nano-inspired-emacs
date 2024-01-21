@@ -437,7 +437,7 @@ The =bp/org-font-setup= function configures various text faces to tweak the size
                   ("#+end_quote" . ?)
                   (":END:" . ?󰑀)
                   ("#+header:" . ?󱍞)
-                  ("#+name:" . ?﮸)
+                  ("#+name:" . ?󰑕)
                   ("#+results:" . ? )
                   ("#+call:" . ? )
                   (":properties:" . ? )
@@ -487,13 +487,9 @@ The =bp/org-font-setup= function configures various text faces to tweak the size
 (use-package vertico
   :init
   (vertico-mode)
-  ;; Show more candidates
   (setq vertico-count 20)
-  ;; Grow and shrink the Vertico minibuffer
   (setq vertico-resize t)
-  ;; Optionally enable cycling for `vertico-next' and `vertico-previous'.
   (setq vertico-cycle t))
-
 
 ;; Persist history over Emacs restarts.Vertico sorts by history position.
 (use-package savehist
@@ -520,12 +516,10 @@ The =bp/org-font-setup= function configures various text faces to tweak the size
 (use-package vertico-directory
   :after vertico
   :straight nil
-  ;; More convenient directory navigation commands
   :bind (:map vertico-map
               ("RET" . vertico-directory-enter)
               ("DEL" . vertico-directory-delete-char)
               ("M-DEL" . vertico-directory-delete-word))
-  ;; Tidy shadowed file names
   :hook (rfn-eshadow-update-overlay . vertico-directory-tidy))
 
 #+end_src
@@ -622,7 +616,6 @@ The =bp/org-font-setup= function configures various text faces to tweak the size
 * Rainbow Mode
 
 Color the background of colors with the color itself.
-TODO: Does this work in NANO?
 
 #+begin_src emacs-lisp
 (use-package rainbow-mode
@@ -686,17 +679,7 @@ Enforce rules as to where and how popup windows open.
   (set-face-attribute 'lsp-ui-peek-peek   nil :inherit 'lsp-ui-peek-list)
   (set-face-attribute 'lsp-ui-peek-selection nil :background nano-color-background :foreground nano-color-salient)
   (set-face-attribute 'lsp-ui-peek-filename nil :foreground nano-color-popout)
-  (set-face-attribute 'lsp-ui-peek-highlight nil :background nano-color-highlight)
-
-   ;; HIGHLY recommended: (setq lsp-ui-peek-fontify 'always)
-   ;; ~(lsp-ui-peek-header                          :foreground fg :background base5)
-   ;; (lsp-ui-peek-footer                          :inherit 'lsp-ui-peek-header)
-   ;; (lsp-ui-peek-selection                       :foreground bg :background yellow)
-   ;; (lsp-ui-peek-list                            :background base3)
-   ;; (lsp-ui-peek-peek                            :inherit 'lsp-ui-peek-list)
-   ;; (lsp-ui-peek-highlight                       :inherit 'isearch)
-   ;; (lsp-ui-peek-filename                        :foreground base8 :weight 'bold)
-  )
+  (set-face-attribute 'lsp-ui-peek-highlight nil :background nano-color-highlight))
 
   #+end_src
   
@@ -705,15 +688,11 @@ Enforce rules as to where and how popup windows open.
  (use-package typescript-mode
   :after tree-sitter
   :config
-  ;; we choose this instead of tsx-mode so that eglot can automatically figure out language for server
-  ;; see https://github.com/joaotavora/eglot/issues/624 and https://github.com/joaotavora/eglot#handling-quirky-servers
   (define-derived-mode typescriptreact-mode typescript-mode
     "TypeScript TSX")
 
   ;; use our derived mode for tsx files
   (add-to-list 'auto-mode-alist '("\\.tsx?\\'" . typescriptreact-mode))
-  ;; by default, typescript-mode is mapped to the treesitter typescript parser
-  ;; use our derived mode to map both .tsx AND .ts -> typescriptreact-mode -> treesitter tsx
   (add-to-list 'tree-sitter-major-mode-language-alist '(typescriptreact-mode . tsx)))
 
 
@@ -741,7 +720,7 @@ Enforce rules as to where and how popup windows open.
   :straight t
 
   :bind
-  (("M-." . embark-act)         ;; pick some comfortable binding
+  (("M-," . embark-act)         ;; pick some comfortable binding
    ("C-;" . embark-dwim)        ;; good alternative: M-.
    ("C-h B" . embark-bindings)) ;; alternative for `describe-bindings
 
@@ -787,14 +766,13 @@ Enforce rules as to where and how popup windows open.
   :config
   (global-git-gutter-mode +1)
   (custom-set-variables
-   '(git-gutter:modified-sign "  ") ;; two space
+   '(git-gutter:modified-sign "@@") ;; two space
    '(git-gutter:added-sign "++")    ;; multiple character is OK
    '(git-gutter:deleted-sign "--"))
 
-  (set-face-background 'git-gutter:modified nano-color-critical) ;; background color
+  (set-face-foreground 'git-gutter:modified nano-color-critical) ;; background color
   (set-face-foreground 'git-gutter:added nano-color-salient)
-  (set-face-foreground 'git-gutter:deleted nano-color-popout)
-  )
+  (set-face-foreground 'git-gutter:deleted nano-color-popout))
 
 #+end_src
 
