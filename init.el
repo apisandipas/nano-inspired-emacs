@@ -48,13 +48,8 @@
       (convert-standard-filename
 	(expand-file-name  "eln-cache/" no-littering-var-directory)))))
 
-;; (use-package modus-themes
-;;   :straight t)
-
 (setq inhibit-startup-message t)
 
-(scroll-bar-mode -1)        ; Disable visible scrollbar
-(tool-bar-mode -1)          ; Disable the toolbar
 (tooltip-mode -1)           ; Disable tooltips
 (set-fringe-mode 10)        ; Give some breathing room
 
@@ -65,7 +60,6 @@
 
 (column-number-mode)
 (setq display-line-numbers 'relative)
-(global-display-line-numbers-mode)
 
 (defvar bp/default-font-size 150)
 (defvar bp/default-variable-font-size 150)
@@ -83,6 +77,7 @@
                    treemacs-mode-hook
                    eshell-mode-hook))
      (add-hook mode (lambda () (display-line-numbers-mode 0))))
+(add-hook 'prog-mode-hook (lambda () (display-line-number-mode 1)))
 
 (straight-use-package
  '(nano-emacs :type git :host github :repo "rougier/nano-emacs"))
@@ -263,10 +258,8 @@
 
 	(bp/leader-keys
 	  "t" '(:ignore t :wl "Toggles")
-	  "t e" '(treemacs :wk "Toggle Explorer"))
+	  "t e" '(treemacs :wk "Toggle Explorer")))
 
-    
-	)
     (with-eval-after-load 'evil-maps
       (define-key evil-normal-state-map (kbd "C-k") 'evil-window-up)
       (define-key evil-normal-state-map (kbd "C-j") 'evil-window-down)
@@ -279,6 +272,7 @@
 	    evil-want-keybinding nil
 	    evil-vsplit-window-right t
 	    evil-split-window-below t
+            evil-want-C-u-scroll t
 	    evil-undo-system 'undo-redo)  ;; Adds vim-like C-r redo functionality
       (evil-mode))
 
@@ -319,7 +313,7 @@
       (set-face-attribute (car face) nil :font "Cantarell" :weight 'regular :height (cdr face)))
 
     ;; Ensure that anything that should be fixed-pitch in Org files appears that way
-    (set-face-attribute 'org-block nil    :foreground nil :inherit 'fixed-pitch)
+    (set-face-attribute 'org-block nil    :foreground nil :background nano-color-highlight :inherit 'fixed-pitch)
     (set-face-attribute 'org-table nil    :inherit 'fixed-pitch)
     (set-face-attribute 'org-formula nil  :inherit 'fixed-pitch)
     (set-face-attribute 'org-code nil     :inherit '(shadow fixed-pitch))
