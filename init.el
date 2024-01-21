@@ -554,7 +554,8 @@
   (set-face-attribute 'lsp-ui-peek-peek   nil :inherit 'lsp-ui-peek-list)
   (set-face-attribute 'lsp-ui-peek-selection nil :background nano-color-background :foreground nano-color-salient)
   (set-face-attribute 'lsp-ui-peek-filename nil :foreground nano-color-popout)
-  (set-face-attribute 'lsp-ui-peek-highlight nil :background nano-color-highlight))
+  (set-face-attribute 'lsp-ui-peek-highlight nil :background nano-color-highlight)
+  (set-face-attribute 'error nil :background nano-color-critical :foreground nano-color-subtle))
 
  (use-package typescript-mode
   :after tree-sitter
