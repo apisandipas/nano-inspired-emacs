@@ -331,6 +331,28 @@
     :custom
     (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
 
+;;;;; Ligatures & Pretty Symbols
+(defun bp/org-prettify-symbols ()
+  "Beautify Org Checkbox Symbol"
+  (setq prettify-symbols-alist
+        (mapcan (lambda (x) (list x (cons (upcase (car x)) (cdr x))))
+                '(("#+begin_src" . ?)
+                  ("#+end_src" . ?)
+                  ("#+begin_example" . ?)
+                  ("#+end_example" . ?)
+                  ("#+begin_quote" . ?)
+                  ("#+end_quote" . ?)
+                  (":END:" . ?󰑀)
+                  ("#+header:" . ?󱍞)
+                  ("#+name:" . ?﮸)
+                  ("#+results:" . ? )
+                  ("#+call:" . ? )
+                  (":properties:" . ? )
+                  (":logbook:" . ? ))))
+  (prettify-symbols-mode))
+
+(add-hook! org-mode #'bp/org-prettify-symbols)
+
 (defun bp/org-mode-setup ()
   (org-indent-mode)
   (variable-pitch-mode 1)

@@ -422,6 +422,30 @@ The =bp/org-font-setup= function configures various text faces to tweak the size
     (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
 #+end_src
 
+** Pretty Symbols
+#+begin_src emacs-lisp
+;;;;; Ligatures & Pretty Symbols
+(defun bp/org-prettify-symbols ()
+  "Beautify Org Checkbox Symbol"
+  (setq prettify-symbols-alist
+        (mapcan (lambda (x) (list x (cons (upcase (car x)) (cdr x))))
+                '(("#+begin_src" . ?)
+                  ("#+end_src" . ?)
+                  ("#+begin_example" . ?)
+                  ("#+end_example" . ?)
+                  ("#+begin_quote" . ?)
+                  ("#+end_quote" . ?)
+                  (":END:" . ?󰑀)
+                  ("#+header:" . ?󱍞)
+                  ("#+name:" . ?﮸)
+                  ("#+results:" . ? )
+                  ("#+call:" . ? )
+                  (":properties:" . ? )
+                  (":logbook:" . ? ))))
+  (prettify-symbols-mode))
+
+(add-hook! org-mode #'bp/org-prettify-symbols)
+#+end_src
 
 ** Basic Config
 
