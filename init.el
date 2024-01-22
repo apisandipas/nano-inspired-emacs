@@ -48,6 +48,8 @@
       (convert-standard-filename
 	(expand-file-name  "eln-cache/" no-littering-var-directory)))))
 
+(defalias 'yes-or-no-p 'y-or-n-p) 
+
 (setq inhibit-startup-message t)
 
 (tooltip-mode -1)           ; Disable tooltips

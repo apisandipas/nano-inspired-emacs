@@ -74,6 +74,7 @@ This is my literate emacs config. This is a work in progress!
 * UI
 ** Basic UI Configuration
 #+begin_src emacs-lisp 
+(defalias 'yes-or-no-p 'y-or-n-p) 
 
 (setq inhibit-startup-message t)
 
