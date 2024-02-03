@@ -359,6 +359,7 @@
 (add-hook 'org-mode-hook #'bp/org-prettify-symbols)
 
 (defun bp/org-mode-setup ()
+  (global-corfu-mode -1)
   (org-indent-mode)
   (variable-pitch-mode 1)
   (visual-line-mode 1))

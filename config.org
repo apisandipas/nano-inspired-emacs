@@ -120,7 +120,6 @@ This is my literate emacs config. This is a work in progress!
 
 ** Basic UI Configuration
 #+begin_src emacs-lisp 
-
 (setq inhibit-startup-message t)
 (set-fringe-mode 10)        ; Give some breathing room
 (setopt use-short-answers t)
@@ -461,6 +460,7 @@ The =bp/org-font-setup= function configures various text faces to tweak the size
 
 #+begin_src emacs-lisp 
 (defun bp/org-mode-setup ()
+  (global-corfu-mode -1)
   (org-indent-mode)
   (variable-pitch-mode 1)
   (visual-line-mode 1))
