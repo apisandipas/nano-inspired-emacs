@@ -53,6 +53,15 @@ This is my literate emacs config. This is a work in progress!
   :hook (emacs-startup . gcmh-mode))
 #+end_src
 
+
+** Fix Path
+#+begin_src emacs-lisp
+(use-package exec-path-from-shell
+  :straight t
+  :config
+  (exec-path-from-shell-initialize))
+#+end_src
+
 ** Keep Folders Clean - No Littering!
 #+begin_src emacs-lisp 
 (use-package no-littering
@@ -72,18 +81,56 @@ This is my literate emacs config. This is a work in progress!
 #+end_src
 
 * UI
+
+** Color Theme
+
+#+begin_src emacs-lisp
+
+(straight-use-package
+ '(nano-emacs :type git :host github :repo "rougier/nano-emacs"))
+
+(require 'nano-theme-dark)
+(require 'nano-faces)
+(require 'nano-theme)
+(require 'nano-modeline)
+(require 'nano-splash)
+(require 'nano-layout)
+
+(defun nano-theme-set-dark ()
+  "Apply dark Nano theme base."
+  ;; Colors from Nord theme at https://www.nordtheme.com
+  (setq frame-background-mode     'dark)
+  (setq nano-color-foreground "#ECEFF4") ;; Snow Storm 3  / nord  6
+  (setq nano-color-background "#2E3440") ;; Polar Night 0 / nord  0
+  (setq nano-color-highlight  "#3B4252") ;; Polar Night 1 / nord  1
+  (setq nano-color-critical   "#EBCB8B") ;; Aurora        / nord 11
+  (setq nano-color-salient    "#81A1C1") ;; Frost         / nord  9
+  (setq nano-color-strong     "#ECEFF4") ;; Snow Storm 3  / nord  6
+  (setq nano-color-popout     "#D08770") ;; Aurora        / nord 12
+  (setq nano-color-subtle     "#434C5E") ;; Polar Night 2 / nord  2
+  (setq nano-color-faded      "#677691") ;;
+  ;; to allow for toggling of the themes.
+  (setq nano-theme-var "dark"))
+
+(nano-theme-set-dark)
+(nano-faces)
+(nano-theme)
+#+end_src
+
+
 ** Basic UI Configuration
 #+begin_src emacs-lisp 
 
 (setq inhibit-startup-message t)
-
-(tooltip-mode -1)           ; Disable tooltips
 (set-fringe-mode 10)        ; Give some breathing room
-
+(setopt use-short-answers t)
+(tooltip-mode -1)           ; Disable tooltips
+(scroll-bar-mode -1)
+(tool-bar-mode -1)
 (menu-bar-mode -1)            ; Disable the menu bar
 
 ;; Set up the visible bell
-(setq visible-bell t)
+(setq visible-bell nil)
 
 (column-number-mode)
 (setq display-line-numbers 'relative)
@@ -104,57 +151,13 @@ This is my literate emacs config. This is a work in progress!
                    shell-mode-hook
                    treemacs-mode-hook
                    eshell-mode-hook))
-     (add-hook mode (lambda () (display-line-numbers-mode 0))))
-(add-hook 'prog-mode-hook (lambda () (display-line-numbers-mode 1)))
+     (add-hook mode (lambda ()
+		      (display-line-numbers-mode 0)
+		      (electric-pair-mode -1))))
+(add-hook 'prog-mode-hook (lambda ()
+			    (display-line-numbers-mode 1)
+			    (electric-pair-mode +1)))
 #+end_src
-
-** Color Theme
-
-#+begin_src emacs-lisp
-
-(straight-use-package
- '(nano-emacs :type git :host github :repo "rougier/nano-emacs"))
-
-(require 'nano-theme-dark)
-
-(defun nano-theme-set-dark ()
-  "Apply dark Nano theme base."
-  ;; Colors from Nord theme at https://www.nordtheme.com
-  (setq frame-background-mode     'dark)
-  (setq nano-color-foreground "#ECEFF4") ;; Snow Storm 3  / nord  6
-  (setq nano-color-background "#2E3440") ;; Polar Night 0 / nord  0
-  (setq nano-color-highlight  "#3B4252") ;; Polar Night 1 / nord  1
-  (setq nano-color-critical   "#EBCB8B") ;; Aurora        / nord 11
-  (setq nano-color-salient    "#81A1C1") ;; Frost         / nord  9
-  (setq nano-color-strong     "#ECEFF4") ;; Snow Storm 3  / nord  6
-  (setq nano-color-popout     "#D08770") ;; Aurora        / nord 12
-  (setq nano-color-subtle     "#434C5E") ;; Polar Night 2 / nord  2
-  (setq nano-color-faded      "#677691") ;;
-  ;; to allow for toggling of the themes.
-  (setq nano-theme-var "dark"))
-
-(nano-theme-set-dark)
-
-(require 'nano-faces)
-(nano-faces)
-
-(require 'nano-theme)
-(nano-theme)
-
-;; Nano header & mode lines
-(require 'nano-modeline)
-
-;; Welcome message
-(let ((inhibit-message t))
-  (message "Welcome to GNU Emacs / N Λ N O edition")
-  (message (format "Initialization time: %s" (emacs-init-time))))
-
-(require 'nano-splash)
-(require 'nano-layout)
-(scroll-bar-mode -1)
-(tool-bar-mode -1)
-#+end_src
-
 
 
 ** Diminish
@@ -470,6 +473,7 @@ The =bp/org-font-setup= function configures various text faces to tweak the size
    (bp/org-font-setup))
 #+end_src
 
+
 ** Org Templates
 
 #+begin_src emacs-lisp
@@ -539,28 +543,37 @@ The =bp/org-font-setup= function configures various text faces to tweak the size
   (set-face-attribute 'corfu-default nil :background nano-color-background)
   (set-face-attribute 'corfu-current nil :background nano-color-highlight)
   (set-face-attribute 'corfu-bar nil :background nano-color-faded)
+  :general
+   (:keymaps 'corfu-map
+   :states 'insert
+   "<tab>" #'corfu-next
+   "<backtab>" #'corfu-previous
+   "<escape>" #'corfu-quit
+   "<return>" #'corfu-insert
+   "M-d" #'corfu-show-documentation
+   "M-l" #'corfu-show-location)
   :init
   (global-corfu-mode))
 
 (use-package cape
   :straight t
-  :bind (("C-c p p" . completion-at-point) ;; capf
-         ("C-c p t" . complete-tag)        ;; etags
-         ("C-c p d" . cape-dabbrev)        ;; or dabbrev-completion
-         ("C-c p h" . cape-history)
-         ("C-c p f" . cape-file)
-         ("C-c p k" . cape-keyword)
-         ("C-c p s" . cape-elisp-symbol)
-         ("C-c p e" . cape-elisp-block)
-         ("C-c p a" . cape-abbrev)
-         ("C-c p l" . cape-line)
-         ("C-c p w" . cape-dict)
-         ("C-c p :" . cape-emoji)
-         ("C-c p \\" . cape-tex)
-         ("C-c p _" . cape-tex)
-         ("C-c p ^" . cape-tex)
-         ("C-c p &" . cape-sgml)
-         ("C-c p r" . cape-rfc1345))
+  :bind (("C-c c p" . completion-at-point) ;; capf
+         ("C-c c t" . complete-tag)        ;; etags
+         ("C-c c d" . cape-dabbrev)        ;; or dabbrev-completion
+         ("C-c c h" . cape-history)
+         ("C-c c f" . cape-file)
+         ("C-c c k" . cape-keyword)
+         ("C-c c s" . cape-elisp-symbol)
+         ("C-c c e" . cape-elisp-block)
+         ("C-c c a" . cape-abbrev)
+         ("C-c c l" . cape-line)
+         ("C-c c w" . cape-dict)
+         ("C-c c :" . cape-emoji)
+         ("C-c c \\" . cape-tex)
+         ("C-c c _" . cape-tex)
+         ("C-c c ^" . cape-tex)
+         ("C-c c &" . cape-sgml)
+         ("C-c c r" . cape-rfc1345))
   :init
   (add-to-list 'completion-at-point-functions #'cape-dabbrev)
   (add-to-list 'completion-at-point-functions #'cape-file)
@@ -704,7 +717,8 @@ Enforce rules as to where and how popup windows open.
   :straight t
   :init
   (setq lsp-keymap-prefix "C-c l")
-  :hook ((typescript-mode . lsp-deferred)
+  :hook ((tsx-ts-mode . lsp-deferred)
+	 (typescript-ts-mode lsp-deferred)
          (lsp-mode . lsp-enable-which-key-integration))
   :commands lsp lsp-deferred
   :config
@@ -735,16 +749,17 @@ Enforce rules as to where and how popup windows open.
   
 * Typescript
 #+begin_src emacs-lisp
- (use-package typescript-mode
-  :after tree-sitter
-  :config
-  ;; (define-derived-mode typescriptreact-mode typescript-mode
-  ;;   "TypeScript TSX")
+ ;; (use-package typescript-mode
+ ;;  :after tree-sitter
+ ;;  :config
+ ;;  ;; (define-derived-mode typescriptreact-mode typescript-mode
+ ;;  ;;   "TypeScript TSX")
 
   ;; use our derived mode for tsx files
   (add-to-list 'auto-mode-alist '("\\.tsx?\\'" . tsx-ts-mode))
+  (add-to-list 'auto-mode-alist '("\\.ts?\\'" . typescrip-ts-mode))
    ;; (add-to-list 'tree-sitter-major-mode-language-alist '(tsx-ts-mode . tsx))
-  )
+  ;; )
 
   ;; (add-to-list 'auto-mode-alist '("\\.tsx?\\'" . tsx-ts-mode))
 ;; (use-package tsx-mode
@@ -754,11 +769,15 @@ Enforce rules as to where and how popup windows open.
 ;;   (tsx-mode t))
 
 
-(use-package prettier-js
-  :straight t
-  :hook ((web-mode tsx-ts-mode) . prettier-js-mode))
 #+end_src
 
+* Prettier
+#+begin_src emacs-lisp
+
+(use-package prettier-js
+  :straight t
+  :hook ((web-mode tsx-ts-mode js-ts-mode javascript-mode typescript-mode) . prettier-js-mode))
+#+end_src
 
 * Flycheck
 #+begin_src emacs-lisp
