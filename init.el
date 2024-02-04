@@ -233,7 +233,14 @@
         "h v" '(helpful-variable :wk "Describe variable")
         "h w" '(where-is :wk "Prints keybinding for command if set")
         "h x" '(helpful-command :wk "Display full documentation for command"))
-
+ 
+    (bp/leader-keys
+      "l" '(:ignore t :wk "LSP")
+      "l t" '(:ignore t :wk "Typescript")
+      "l t r" '(tide-rename-symbol :wk "Rename Symbol")
+      "l t f" '(tide-references :wk "Find references")
+      "l t i" '(tide-organize-imports :wk "Organize Imports"))
+    
     (bp/leader-keys
         "w" '(:ignore t :wk "Windows/Words")
         ;; Window splits
@@ -525,13 +532,6 @@
     (window-width . fit-window-to-buffer))
    ))
 
-;; (use-package tree-sitter
-;;   :straight t
-;;   :config
-;;   (global-tree-sitter-mode)
-;;   (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)
-;;   )
-
 (use-package tree-sitter
   :commands (treesit-install-language-grammar bp/treesit-install-all-languages)
   :init
@@ -577,9 +577,9 @@
   :straight t
   :init
   (setq lsp-keymap-prefix "C-c l")
-  :hook ((tsx-ts-mode . lsp-deferred)
-	 (typescript-ts-mode lsp-deferred)
-         (lsp-mode . lsp-enable-which-key-integration))
+  :hook ((lsp-mode . lsp-enable-which-key-integration)
+	 (tsx-ts-mode . lsp-deferred)
+	 (typescript-ts-mode . lsp-deferred))
   :commands lsp lsp-deferred
   :config
     (setq lsp-headerline-breadcrumb-enable nil)) 
@@ -605,24 +605,21 @@
   (set-face-attribute 'lsp-ui-peek-highlight nil :background nano-color-highlight)
   (set-face-attribute 'error nil :background nano-color-critical :foreground nano-color-subtle))
 
- ;; (use-package typescript-mode
- ;;  :after tree-sitter
- ;;  :config
- ;;  ;; (define-derived-mode typescriptreact-mode typescript-mode
- ;;  ;;   "TypeScript TSX")
+(add-to-list 'auto-mode-alist '("\\.tsx?\\'" . tsx-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.ts?\\'" . typescrip-ts-mode))
 
-  ;; use our derived mode for tsx files
-  (add-to-list 'auto-mode-alist '("\\.tsx?\\'" . tsx-ts-mode))
-  (add-to-list 'auto-mode-alist '("\\.ts?\\'" . typescrip-ts-mode))
-   ;; (add-to-list 'tree-sitter-major-mode-language-alist '(tsx-ts-mode . tsx))
-  ;; )
+(defun setup-tide-mode ()
+  (interactive)
+  (tide-setup)
+  (flycheck-mode +1)
+  (setq flycheck-check-syntax-automatically '(save mode-enabled))
+  (eldoc-mode +1)
+  (tide-hl-identifier-mode +1))
 
-  ;; (add-to-list 'auto-mode-alist '("\\.tsx?\\'" . tsx-ts-mode))
-;; (use-package tsx-mode
-;;   :straight (tsx-mode :type git :host github :repo "orzechowskid/tsx-mode.el")
-;;   :config
-;;   (add-to-list 'auto-mode-alist '("\\.[jt]s[x]?\\'" . tsx-mode))
-;;   (tsx-mode t))
+(use-package tide
+  :straight t
+  :config
+  (add-hook 'tsx-ts-mode-hook #'setup-tide-mode))
 
 (use-package prettier-js
   :straight t
